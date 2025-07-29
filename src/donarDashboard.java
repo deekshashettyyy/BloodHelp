@@ -113,6 +113,14 @@ public class donarDashboard extends JFrame
               }
       );
 
+      // Donation History
+      b2.addActionListener(
+              a->{
+                  new donationHistory(id, username);
+                  dispose();
+              }
+      );
+
 
       setSize(1600,1000);
       setVisible(true);

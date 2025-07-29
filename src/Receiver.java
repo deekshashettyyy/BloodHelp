@@ -30,6 +30,7 @@ public class Receiver extends JFrame
         JComboBox<String> t5 = new JComboBox<>(new String[]{ "Select" , "Immediate" , "1-2days" , "within a week"});
 
         JButton b1 = new JButton("Send Request");
+        JButton b2 = new JButton("Back to login");
 
         //setFont
         title1.setFont(f1);
@@ -45,6 +46,7 @@ public class Receiver extends JFrame
         l5.setFont(f3);
         t5.setFont(f3);
         b1.setFont(f3);
+        b2.setFont(f3);
 
         //setBorder
         t1.setBorder(null);
@@ -84,7 +86,8 @@ public class Receiver extends JFrame
         l5.setBounds(labelX, yStart + 4 * gap, width, height);
         t5.setBounds(610,yStart + 4 * gap,250,35);
 
-        b1.setBounds(500,(int)(yStart + 5.5 * gap),170,45);
+        b1.setBounds(620,(int)(yStart + 5.5 * gap),160,40);
+        b2.setBounds(420,(int)(yStart + 5.5 * gap),150,40);
 
 
         //add in Content Pane
@@ -102,6 +105,15 @@ public class Receiver extends JFrame
         c.add(l5);
         c.add(t5);
         c.add(b1);
+        c.add(b2);
+
+        //Back to Login
+        b2.addActionListener(
+                a->{
+                    new Login();
+                    dispose();
+                }
+        );
 
         //SEND REQUEST
         b1.addActionListener(
