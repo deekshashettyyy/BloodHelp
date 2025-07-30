@@ -12,7 +12,7 @@ public class Receiver extends JFrame
 
         JLabel title1 = new JLabel("Welcome "+username);
 
-        JLabel title2 = new JLabel("Enter Patient Details");
+        JLabel title2 = new JLabel("Enter Patient Details to request Blood Donation");
 
         JLabel l1 = new JLabel("1. Name: ");
         JTextField t1 = new JTextField(20);
@@ -69,7 +69,7 @@ public class Receiver extends JFrame
         int labelX = 300 , yStart = 190 , width = 550 , height = 30 , gap = 62;
 
         title1.setBounds(400 , 20 , 550, 50);
-        title2.setBounds(300 , 120, 550, 50);
+        title2.setBounds(300 , 120, 700, 50);
 
         l1.setBounds(labelX, yStart, width, height);
         t1.setBounds(610,yStart,250,35);

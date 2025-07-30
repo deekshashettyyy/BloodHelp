@@ -78,6 +78,10 @@ public class donationHistory extends JFrame
 
 
 
+
+
+
+
         setSize(1600, 1000);
         setVisible(true);
         setLocationRelativeTo(null);

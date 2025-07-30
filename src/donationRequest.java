@@ -30,7 +30,7 @@ public class donationRequest extends JFrame
         title.setBackground(Color.RED);
 
 
-        String[] columnNames = {"Date & Time" , "Patient Name", "BloodGroup" , "Contact", "Hospital Name / Address", "Required"};
+        String[] columnNames = {"Date & Time", "PatientID" , "Patient Name", "BloodGroup" , "Contact", "Hospital Name / Address", "Required"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
         table.setRowHeight(30);
@@ -85,10 +85,11 @@ public class donationRequest extends JFrame
                     String patientName = rs.getString("pname");
                     String bloodGroup = rs.getString("bloodgrp");
                     String contact = rs.getString("contact");
-                    String address = rs.getString("address");
+                    String patientAddress = rs.getString("address");
                     String required = rs.getString("required");
+                    int patientID = rs.getInt("patientID");
 
-                    tableModel.addRow(new Object[]{dateTime , patientName , bloodGroup , contact , address, required });
+                    tableModel.addRow(new Object[]{dateTime ,patientID ,  patientName , bloodGroup , contact , patientAddress, required });
 
                 }
             }
@@ -102,15 +103,13 @@ public class donationRequest extends JFrame
         table.addMouseListener(new MouseAdapter(){
            public void mouseClicked(MouseEvent e)
            {
-               int row = table.rowAtPoint(e.getPoint());
+               int row = table.rowAtPoint(e.getPoint());   // getting row on which user clicked
                if(row>=0)
                {
                    handleRowClick(row);
                }
            }
         });
-
-
 
         b1.addActionListener(
                 a->{
@@ -119,7 +118,6 @@ public class donationRequest extends JFrame
                 }
         );
 
-
         setSize(1600, 1000);
         setVisible(true);
         setLocationRelativeTo(null);
@@ -127,10 +125,15 @@ public class donationRequest extends JFrame
         setTitle("BloodHelp");
     }
 
+
     void handleRowClick(int row)
     {
-        String patientName = (String) table.getValueAt(row,1);
+        //getting details of patient row
+        int patientID = (int) table.getValueAt(row, 1);
+        String patientName = (String) table.getValueAt(row,2);
+        String patientAddress = (String) table.getValueAt(row, 5);
 
+//        showing pop up of Accept reject
         int choice = JOptionPane.showOptionDialog(
                 this,
                 "Do you want to Accept OR Reject Donation Request from "+patientName+" ?",
@@ -142,19 +145,88 @@ public class donationRequest extends JFrame
                 "Accept"
         );
 
-        if(choice == JOptionPane.YES_OPTION)  //choice = 0
-        {
+        JOptionPane.showMessageDialog(
+                this,
+                "Request successfully " + (choice == 0 ? "Accepted!" : "Rejected!")
+        );
 
+//        insert details of given row in donarDecision table
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url , "root" , "Dee01$hetty"))
+        {
+            String sql = "INSERT INTO donarDecision(userID, patientID, patientName , patientAddress, status) VALUES(?,?,?,?,?)";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, userID);
+                pst.setInt(2, patientID);
+                pst.setString(3, patientName);
+                pst.setString(4, patientAddress);
+
+                if(choice == JOptionPane.YES_OPTION)  //choice = 0 --> Accepted
+                {
+
+                    prevActivePatient(userID);                    // purana jo Active hai osko find karo & make it Accepted
+                    pst.setString(5, "Active");    // Now user is Active for this patient
+                }
+                else if(choice == JOptionPane.NO_OPTION)  //choice = 1 --> Rejected
+                {
+                    pst.setString(5,"Rejected");
+                }
+
+                pst.executeUpdate();
+            }
         }
-        else if(choice == JOptionPane.NO_OPTION)  //choice = 1
+        catch(Exception e)
         {
-
-        }
-        else
-        {
-
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+
+    void prevActivePatient(int userID)
+    {
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url , "root" , "Dee01$hetty"))
+        {
+            // Find latest status = 'Active'
+            String sql = "SELECT * FROM donarDecision WHERE userID=? AND status ='Active' ORDER BY decisionTime DESC LIMIT 1";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, userID);
+
+                ResultSet rs = pst.executeQuery();
+                if(rs.next())                         //  make it status = accepted as new one is active
+                {
+                    int patientID = rs.getInt("patientID");  // take out id for patient for whom user is active now
+                    updateStatus(userID, patientID);                    // change that patient's status = Accepted  (from Active)
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    void updateStatus(int userID, int patientID)
+    {
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url , "root" , "Dee01$hetty"))
+        {
+            String sql = "UPDATE donarDecision set status='Accepted' WHERE userID=? AND patientID=?";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, userID);
+                pst.setInt(2,patientID);
+
+                pst.executeUpdate();
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
 
     public static void main(String[] args)
     {
