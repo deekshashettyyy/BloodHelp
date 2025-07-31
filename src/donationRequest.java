@@ -69,28 +69,38 @@ public class donationRequest extends JFrame
         c.add(scroll, BorderLayout.CENTER);
         c.add(bottomPanel, BorderLayout.SOUTH);
 
+        //Fetch donar's bloodgrp
+        String donarBloodgrp = donarBlood(userID);
+
 
 //         show details in table = fetch from patient table
         String url = "jdbc:mysql://localhost:3306/bloodHelp";
         try(Connection con = DriverManager.getConnection(url, "root", "Dee01$hetty"))
         {
-            String sql = "SELECT * FROM patient ORDER BY requestTime DESC";
+//   way1         String sql = "SELECT * FROM patient ORDER BY requestTime DESC";
+            String sql = "SELECT * FROM patient WHERE bloodgrp=? ORDER BY requestTime DESC";
             try(PreparedStatement pst = con.prepareStatement(sql) )
             {
+                pst.setString(1,donarBloodgrp);
                 ResultSet rs = pst.executeQuery();
 
                 while(rs.next())
                 {
                     String dateTime = rs.getString("requestTime");
                     String patientName = rs.getString("pname");
-                    String bloodGroup = rs.getString("bloodgrp");
+                    String patientbloodGroup = rs.getString("bloodgrp");
                     String contact = rs.getString("contact");
                     String patientAddress = rs.getString("address");
                     String required = rs.getString("required");
                     int patientID = rs.getInt("patientID");
 
-                    tableModel.addRow(new Object[]{dateTime ,patientID ,  patientName , bloodGroup , contact , patientAddress, required });
+                    tableModel.addRow(new Object[]{dateTime ,patientID ,  patientName , patientbloodGroup , contact , patientAddress, required });
 
+
+// way1               if(donarBloodgrp.equals(patientbloodGroup))
+//                    {
+//                        tableModel.addRow(new Object[]{dateTime ,patientID ,  patientName , patientbloodGroup , contact , patientAddress, required });
+//                    }
                 }
             }
         }
@@ -123,6 +133,32 @@ public class donationRequest extends JFrame
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("BloodHelp");
+    }
+
+    // Find donarBlood
+    String donarBlood(int userID)
+    {
+        String bloodgrp="";
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url , "root" , "Dee01$hetty"))
+        {
+            String sql = "SELECT * FROM donarMedHist WHERE userID=?";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, userID);
+
+                ResultSet rs = pst.executeQuery();
+                if(rs.next())
+                {
+                    bloodgrp = rs.getString("bloodgrp");
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return bloodgrp;
     }
 
 
@@ -230,6 +266,6 @@ public class donationRequest extends JFrame
 
     public static void main(String[] args)
     {
-        new donationRequest(10, "chai");
+        new donationRequest(11, "chai");
     }
 }

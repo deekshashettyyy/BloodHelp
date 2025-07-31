@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.*;
 
 
 public class donationHistory extends JFrame
@@ -74,12 +75,32 @@ public class donationHistory extends JFrame
                 }
         );
 
+        // Show donation history in table - donarDecision table fetch
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url,"root","Dee01$hetty"))
+        {
+            String sql = "SELECT * FROM donarDecision where userID=? ORDER BY decisionTime DESC";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, this.userID);
 
+                ResultSet rs = pst.executeQuery();
 
+                while(rs.next())
+                {
+                    String decisionTime = rs.getString("decisionTime");
+                    String patientName = rs.getString("patientName");
+                    String patientAddress = rs.getString("patientAddress");
+                    String status = rs.getString("status");
 
-
-
-
+                    tableModel.addRow(new Object[]{decisionTime, patientName , patientAddress, status});
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
 
 
         setSize(1600, 1000);
@@ -92,6 +113,6 @@ public class donationHistory extends JFrame
 
     public static void main(String[] args)
     {
-        new donationHistory(1,"deeksha");
+        new donationHistory(10,"deeksha");
     }
 }
