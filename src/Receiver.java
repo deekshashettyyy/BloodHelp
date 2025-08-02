@@ -4,10 +4,13 @@ import java.sql.*;
 
 public class Receiver extends JFrame
 {
+    int userID ;
     Receiver(int userID, String username)
     {
-        Font f1 = new Font("Futura" , Font.BOLD , 45);
-        Font f2 = new Font("Futura" , Font.PLAIN , 28);
+        this.userID = userID;
+
+        Font f1 = new Font("Futura" , Font.PLAIN , 45);
+        Font f2 = new Font("Futura" , Font.PLAIN , 24);
         Font f3 = new Font("Calibri" ,Font.PLAIN, 22);
 
         JLabel title1 = new JLabel("Welcome "+username);
@@ -31,6 +34,7 @@ public class Receiver extends JFrame
 
         JButton b1 = new JButton("Send Request");
         JButton b2 = new JButton("Back to login");
+        JButton b3 = new JButton("Track Request");
 
         //setFont
         title1.setFont(f1);
@@ -47,6 +51,7 @@ public class Receiver extends JFrame
         t5.setFont(f3);
         b1.setFont(f3);
         b2.setFont(f3);
+        b3.setFont(f3);
 
         //setBorder
         t1.setBorder(null);
@@ -66,28 +71,30 @@ public class Receiver extends JFrame
 
         // Bounds
         setLayout(null);
-        int labelX = 300 , yStart = 190 , width = 550 , height = 30 , gap = 62;
 
-        title1.setBounds(400 , 20 , 550, 50);
-        title2.setBounds(300 , 120, 700, 50);
+        int labelX = 300 , yStart = 180 , width = 550 , height = 30 , gap = 62;
+
+        title1.setBounds(390 , 10 , 550, 50);
+        title2.setBounds(300 , 115, 700, 50);
 
         l1.setBounds(labelX, yStart, width, height);
-        t1.setBounds(610,yStart,250,35);
+        t1.setBounds(620,yStart,270,35);
 
         l2.setBounds(labelX, yStart + gap, width, height);
-        t2.setBounds(610,yStart + gap,250,35);
+        t2.setBounds(620,yStart + gap,270,35);
 
         l3.setBounds(labelX, yStart + 2 * gap, width, height);
-        t3.setBounds(610,yStart + 2 * gap,250,35);
+        t3.setBounds(620,yStart + 2 * gap,270,35);
 
         l4.setBounds(labelX, yStart + 3 * gap, width, height);
-        t4.setBounds(610,yStart + 3 * gap,250,35);
+        t4.setBounds(620,yStart + 3 * gap,270,35);
 
         l5.setBounds(labelX, yStart + 4 * gap, width, height);
-        t5.setBounds(610,yStart + 4 * gap,250,35);
+        t5.setBounds(620,yStart + 4 * gap,270,35);
 
-        b1.setBounds(620,(int)(yStart + 5.5 * gap),160,40);
-        b2.setBounds(420,(int)(yStart + 5.5 * gap),150,40);
+        b2.setBounds(310,(int)(yStart + 5.5 * gap),150,40);
+        b1.setBounds(510,(int)(yStart + 5.5 * gap),160,40);
+        b3.setBounds(710,(int)(yStart + 5.5 * gap),160,40);
 
 
         //add in Content Pane
@@ -106,11 +113,20 @@ public class Receiver extends JFrame
         c.add(t5);
         c.add(b1);
         c.add(b2);
+        c.add(b3);
 
         //Back to Login
         b2.addActionListener(
                 a->{
                     new Login();
+                    dispose();
+                }
+        );
+
+        // Track Request button
+        b3.addActionListener(
+                a->{
+                    new TrackRequest(this.userID , username);
                     dispose();
                 }
         );
@@ -131,7 +147,7 @@ public class Receiver extends JFrame
 
                     try(Connection con = DriverManager.getConnection(url, "root", "Dee01$hetty") )
                     {
-                        String sql = "INSERT INTO patient(pname, bloodgrp, contact, address, required) VALUES(?,?,?,?,?)";
+                        String sql = "INSERT INTO patient(pname, bloodgrp, contact, address, required , receiverID) VALUES(?,?,?,?,?,?)";
                         try(PreparedStatement pst = con.prepareStatement(sql))
                         {
                             pst.setString(1, t1.getText());
@@ -139,6 +155,7 @@ public class Receiver extends JFrame
                             pst.setString(3, t3.getText());
                             pst.setString(4, t4.getText());
                             pst.setString(5, reqBox.toString());
+                            pst.setInt(6, this.userID);
 
                             pst.executeUpdate();
                             JOptionPane.showMessageDialog(null , "Request Send Successfully");
