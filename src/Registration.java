@@ -41,6 +41,25 @@ class Registration extends JFrame
         JButton b1 = new JButton("Go to Login");
         JButton b2 = new JButton("Register");
 
+        ImageIcon imgIcon = new ImageIcon("./images/blood6.jpg");
+        Image img = imgIcon.getImage().getScaledInstance(1600,700,Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setBounds(0,0,1600,1000);
+        setContentPane(imgLabel);
+
+
+        //Color
+        title.setForeground(Color.WHITE);
+        l1.setForeground(Color.WHITE);
+        l2.setForeground(Color.WHITE);
+        l3.setForeground(Color.WHITE);
+        l4.setForeground(Color.WHITE);
+        l5.setForeground(Color.WHITE);
+        l6.setForeground(Color.WHITE);
+        l7.setForeground(Color.WHITE);
+        l8.setForeground(Color.WHITE);
+        l9.setForeground(Color.WHITE);
 
         //removing border
         t1.setBorder(null);
@@ -114,10 +133,6 @@ class Registration extends JFrame
         b1.setBounds(450, (int)(yStart + 9.2 * gap), 150, 35);
         b2.setBounds(650, (int)(yStart + 9.2 * gap), 150, 35);
 
-
-//        COLOR
-        getContentPane().setBackground(Color.red);
-        title.setForeground(Color.white);
 
         c.add(title);
         c.add(l1);

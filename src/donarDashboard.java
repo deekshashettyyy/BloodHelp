@@ -12,15 +12,16 @@ public class donarDashboard extends JFrame
 
   //Background Image
       //load image from file into imageIcon(img in frame)
-      ImageIcon imgIcon = new ImageIcon("./images/blood1.png");
+      ImageIcon imgIcon = new ImageIcon("./images/blood11.png");
       // img ko remove from frame to resize
-      Image img = imgIcon.getImage().getScaledInstance(1300,700,Image.SCALE_SMOOTH);
+      Image img = imgIcon.getImage().getScaledInstance(1280,700,Image.SCALE_SMOOTH);
       // again putting resized img in frame = imageIcon
       ImageIcon icon = new ImageIcon(img);
       // why becoz JLabel needs imageIcon not img
       JLabel imgLabel = new JLabel(icon);
-      imgLabel.setBounds(0,0,1600,1000);
+      imgLabel.setBounds(0,0,1700,1000);
       setContentPane(imgLabel);
+
       setLayout(null);
 
       //Fonts
@@ -118,6 +119,12 @@ public class donarDashboard extends JFrame
               a->{
                   new donationHistory(id, username);
                   dispose();
+              }
+      );
+
+      b5.addActionListener(
+              a->{
+                  new Guidelines(id, username);
               }
       );
 

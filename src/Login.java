@@ -18,9 +18,16 @@ class Login extends JFrame
         JLabel l2 = new JLabel("Enter Password: ");
         JPasswordField t2 = new JPasswordField(20);
         JLabel l3 = new JLabel("Login as:");
-        JComboBox<String> roleBox = new JComboBox<>(new String[]{"Select" , "Donar" , "Receiver" , "Admin"});
+        JComboBox<String> roleBox = new JComboBox<>(new String[]{"Select" , "Donar" , "Receiver"});
         JButton b1 = new JButton("New User?");
         JButton b2 = new JButton("Login");
+
+        ImageIcon imgIcon = new ImageIcon("./images/blood1.png");
+        Image img = imgIcon.getImage().getScaledInstance(1300,700,Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setBounds(0,0,1600,1000);
+        setContentPane(imgLabel);
 
 
         // ContentPane
@@ -55,7 +62,6 @@ class Login extends JFrame
         b2.setFont(f2);
 
         // Color
-        getContentPane().setBackground(Color.RED);
         title.setForeground(Color.WHITE);
 
         //remove border
@@ -148,10 +154,7 @@ class Login extends JFrame
                                     new Receiver(userID, name);
                                     dispose();
                                 }
-                                else{
-                                    new Admin();
-                                    dispose();
-                                }
+
                             }
                             else
                             {

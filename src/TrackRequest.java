@@ -1,7 +1,11 @@
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackRequest extends JFrame
 {
@@ -21,7 +25,7 @@ public class TrackRequest extends JFrame
         title.setOpaque(true);
         title.setBackground(Color.RED);
 
-        String[] columnNames = {"DecisionTime" ,"Patient Name" ,"Address", "Donar Name" ,"Contact" ,"Status"};
+        String[] columnNames = {"DecisionTime" ,"Patient Name", "Bloodgrp" ,"Address", "Donar Name" ,"Contact" ,"Status"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(tableModel);
         table.setRowHeight(30);
@@ -69,36 +73,46 @@ public class TrackRequest extends JFrame
         );
 
 //        Fetch patientID for current ReceiverID from patient Table
-        int[] patientID = findPatientID(this.userID);
+//        Using List is better option then Array patientId is dynamic
+        List<Integer> patientID = findPatientID(this.userID);
 
 
         // Fetch from donarDecision Table for that patient using patientID
-        for(int i=0; i<patientID.length; i++)
+        for(int i=0; i<patientID.size(); i++)
         {
-            int currentPatient = patientID[i];
+            int currentPatientID = patientID.get(i);
 
             String url = "jdbc:mysql://localhost:3306/bloodHelp";
             try(Connection con = DriverManager.getConnection(url,"root","Dee01$hetty"))
             {
-                String sql = "SELECT * FROM donarDecision where patientID=? ORDER BY decisionTime DESC";
+                String sql = "SELECT d.decisionTime, d.patientName, d.patientAddress, d.status, u.name, u.phone , p.bloodgrp " +
+                        "FROM donardecision d " +
+                        "JOIN users u ON d.userID = u.userID " +
+                        "JOIN patient p ON p.patientID = d.patientID "+
+                        "WHERE d.patientID = ?  AND d.status IN ('Active', 'Accepted') " +
+                        "ORDER BY d.decisionTime";
+
+
                 try(PreparedStatement pst = con.prepareStatement(sql))
                 {
-                    pst.setInt(1, currentPatient);
+                    pst.setInt(1, currentPatientID);
 
                     ResultSet rs = pst.executeQuery();
 
-                    while(rs.next())
+                    if(rs.next())
                     {
                         String decisionTime = rs.getString("decisionTime");
                         String patientName = rs.getString("patientName");
+                        String patientBloodgrp = rs.getString("bloodgrp");
                         String patientAddress = rs.getString("patientAddress");
                         String status = rs.getString("status");
-                        int donarID = rs.getInt("userID");
+                        String donarName = rs.getString("name");
+                        String donarPhone = rs.getString("phone");
 
-//                        int[] donarDetails = findDonar(donarID);
+                      tableModel.addRow(new Object[]{decisionTime, patientName, patientBloodgrp ,patientAddress ,donarName, donarPhone , status});
 
-//                        String[] columnNames = {"DecisionTime" ,"Patient Name" ,"Address", "Donar Name" ,"Contact" ,"Status"};
-                        tableModel.addRow(new Object[]{decisionTime, patientName , patientAddress, status});
+                      // Delete this patient request from patient table as one donar has accepted to donate for that patient
+//                        deletePatient(currentPatientID);
                     }
                 }
             }
@@ -117,14 +131,14 @@ public class TrackRequest extends JFrame
         setTitle("BloodHelp");
     }
 
-    int[] findPatientID(int receiverID)
+    List<Integer> findPatientID(int receiverID)
     {
-        int[] patientID = new int[0];
+        List<Integer> patientList = new ArrayList<>();
 
         String url = "jdbc:mysql://localhost:3306/bloodHelp";
         try(Connection con = DriverManager.getConnection(url,"root","Dee01$hetty"))
         {
-            String sql = "SELECT * FROM patient where receiverID=? ORDER BY decisionTime DESC";
+            String sql = "SELECT * FROM patient where receiverID=? ORDER BY requestTime DESC";
             try(PreparedStatement pst = con.prepareStatement(sql))
             {
                 pst.setInt(1, receiverID);
@@ -133,7 +147,7 @@ public class TrackRequest extends JFrame
 
                 while(rs.next())
                 {
-                    patientID = new int[]{rs.getInt("patientID")};
+                    patientList.add(rs.getInt("patientID"));
                 }
             }
         }
@@ -142,11 +156,30 @@ public class TrackRequest extends JFrame
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
 
-        return patientID;
+        return patientList;
+    }
+
+    void deletePatient(int patientID)
+    {
+        String url = "jdbc:mysql://localhost:3306/bloodHelp";
+        try(Connection con = DriverManager.getConnection(url, "root" ,"Dee01$hetty"))
+        {
+            String sql = "DELETE FROM patient WHERE patientID=?";
+            try(PreparedStatement pst = con.prepareStatement(sql))
+            {
+                pst.setInt(1, patientID);
+
+                pst.executeUpdate();
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     public static void main(String[] args)
     {
-        new TrackRequest(1 , "dee");
+        new TrackRequest(12 , "dee");
     }
 }

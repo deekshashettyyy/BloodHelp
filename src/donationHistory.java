@@ -113,6 +113,6 @@ public class donationHistory extends JFrame
 
     public static void main(String[] args)
     {
-        new donationHistory(10,"deeksha");
+        new donationHistory(12,"deeksha");
     }
 }

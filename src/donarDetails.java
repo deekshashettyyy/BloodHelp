@@ -46,6 +46,13 @@ public class donarDetails extends JFrame
         JButton b1 = new JButton("Back");
         JButton b2 = new JButton("Update");
 
+        ImageIcon imgIcon = new ImageIcon("./images/blood6.jpg");
+        Image img = imgIcon.getImage().getScaledInstance(1300,700,Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setBounds(0,0,1600,1000);
+        setContentPane(imgLabel);
+
         //removing border
         t1.setBorder(null);
         t2.setBorder(null);

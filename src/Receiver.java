@@ -36,6 +36,13 @@ public class Receiver extends JFrame
         JButton b2 = new JButton("Back to login");
         JButton b3 = new JButton("Track Request");
 
+        ImageIcon imgIcon = new ImageIcon("./images/blood8.jpg");
+        Image img = imgIcon.getImage().getScaledInstance(1400,700,Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setBounds(0,0,1600,1000);
+        setContentPane(imgLabel);
+
         //setFont
         title1.setFont(f1);
         title2.setFont(f2);
@@ -64,9 +71,13 @@ public class Receiver extends JFrame
         Container c = getContentPane();
 
         //Color
-        c.setBackground(Color.red);
         title1.setForeground(Color.white);
         title2.setForeground(Color.white);
+        l1.setForeground(Color.WHITE);
+        l2.setForeground(Color.WHITE);
+        l3.setForeground(Color.WHITE);
+        l4.setForeground(Color.WHITE);
+        l5.setForeground(Color.WHITE);
 
 
         // Bounds
@@ -74,7 +85,7 @@ public class Receiver extends JFrame
 
         int labelX = 300 , yStart = 180 , width = 550 , height = 30 , gap = 62;
 
-        title1.setBounds(390 , 10 , 550, 50);
+        title1.setBounds(415 , 10 , 550, 50);
         title2.setBounds(300 , 115, 700, 50);
 
         l1.setBounds(labelX, yStart, width, height);
@@ -178,6 +189,6 @@ public class Receiver extends JFrame
 
     public static void main(String[] args)
     {
-        new Receiver(1,"deeksha");
+        new Receiver(12,"deeksha");
     }
 }
