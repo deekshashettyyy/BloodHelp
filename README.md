@@ -1,7 +1,7 @@
 
 # 🩸 BloodHelp – Blood Bank Management System
 
-A Java + MySQL based desktop application to streamline Blood Donation workflows by connecting Eligible Donors with patients in need with real-time tracking, secure requests, and logical donor-patient matching.
+BloodHelp is a Java and MySQL based desktop application designed to streamline blood donation management by connecting Eligible Donors with Patients, Tracking Donation Requests, and automating Blood group based matching.
 
 ---
 
@@ -62,6 +62,45 @@ Tracks donor decisions on each request.
 
 ---
 
+## System Flow Diagram
+```text
+  Receiver Creates Blood Request for Patients
+         ↓
+  Request stored in Patient Table
+         ↓
+  Blood Group Matching
+         ↓
+  Eligible Donors
+         ↓
+  Accept / Reject
+         ↓
+  Decision History
+```
+
+---
+
+## Screenshots & Demo video
+
+### 1. Login page
+![Login](./UI_screenshots/Login.png)
+
+### 2. Donar Dashboard
+![DonarDashboard](./UI_screenshots/DonarDashboard.png)
+
+### 3. Blood Donation Requests
+![DonationRequests](./UI_screenshots/DonationRequests.png)
+
+### 4. Blood Donation History
+![DonationHistory](./UI_screenshots/DonationHistory.png)
+
+### 5. Receiver Dashboard
+![ReceiverDashboard](./UI_screenshots/Receiver-Dashboard.png)
+
+### Track Blood Requests
+![Track Requests](./UI_screenshots/TrackRequest.png)
+
+---
+
 ## ⚙️ How to Run
 
 1. **Clone the Repository**
@@ -89,4 +128,4 @@ Tracks donor decisions on each request.
 ## 🙋‍♀️ Developed By
 
 **Deeksha Shetty**  
-> Feel free to connect for contributions, suggestions, or queries.
+> Developed as a personal project to explore desktop application development, database design, and healthcare workflow automation.

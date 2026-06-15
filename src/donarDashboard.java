@@ -138,6 +138,6 @@ public class donarDashboard extends JFrame
 
   public static void main(String[] args)
   {
-      new donarDashboard(1, "deeksha" );
+      new donarDashboard(13, "Deeksha" );
   }
 }
